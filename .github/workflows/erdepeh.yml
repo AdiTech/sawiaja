@@ -1,48 +1,39 @@
-name: Ubuntu-Linux-RDP-Fixed
+name: Ubuntu-RDP-Super-Fast
 on:
   workflow_dispatch:
     inputs:
       auth_command:
-        description: 'Paste Google Auth Command (DISPLAY=...)'
+        description: 'Tempel Perintah DISPLAY= dari Google di sini'
         required: true
       pin:
-        description: '6 Digit PIN'
+        description: 'PIN 6 Digit'
         required: true
         default: '123456'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - name: Update System Repositories
+    - name: 1. Update & Install Python + Node (Prioritas)
       run: |
         sudo apt-get update
-    - name: Install Python Environment
+        sudo apt-get install -y python3 python3-pip nodejs npm
+    - name: 2. Install Tools Inti (Tanpa Error)
       run: |
-        sudo apt-get install -y python3 python3-pip python3-venv
-    - name: Install Nodejs Environment
-      run: |
-        curl -fsSL https://deb.nodesource.com/setup_20.x | sudo -E bash -
-        sudo apt-get install -y nodejs
-    - name: Install Supporting Tools
-      run: |
-        sudo apt-get install -y wget curl git zip unzip tar
-    - name: Install Desktop Environment
+        sudo apt-get install -y wget curl git zip unzip
+    - name: 3. Install Desktop Environment (XFCE)
       run: |
         sudo apt-get install -y xfce4 desktop-base xfce4-terminal
-    - name: Install Chrome Remote Desktop
+    - name: 4. Install Chrome Remote Desktop
       run: |
         wget https://dl.google.com/linux/direct/chrome-remote-desktop_current_amd64.deb
         sudo apt-get install -y ./chrome-remote-desktop_current_amd64.deb
-    - name: Configure XFCE Session
+    - name: 5. Konfigurasi Sesi Grafis
       run: |
         sudo bash -c 'echo "exec /etc/X11/XSRV/Xsession /usr/bin/xfce4-session" > /etc/chrome-remote-desktop-session'
-    - name: Initialize Google Connection
+    - name: 6. AKTIVASI KONEKSI GOOGLE
       run: |
         ${{ github.event.inputs.auth_command }} --pin=${{ github.event.inputs.pin }}
-    - name: System Verification
+    - name: 7. Jaga RDP Tetap Hidup (6 Jam)
       run: |
-        python3 --version
-        node --version
-    - name: Keep Alive
-      run: |
+        echo "RDP Berhasil Dinyalakan! Silakan cek di remotedesktop.google.com/access"
         sleep 21600
